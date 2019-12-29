@@ -1,0 +1,15 @@
+library(dplyr)
+library(ggplot2)
+NEI <- readRDS("summarySCC_PM25.rds")
+SCC <- readRDS("Source_Classification_Code.rds")
+list<-grep("Fuel Comb.*Coal",SCC$EI.Sector)
+list2<-SCC[list,]
+list3<-list2$SCC
+task4<-subset(NEI,SCC %in% list3)
+df<-tbl_df(task4)
+task4<-group_by(df,year)
+a<-summarize(task4,total=sum(Emissions))
+s<-as.data.frame(a)
+png("plot4.png")
+barplot(s$total,s$year,names=s$year,xlab="Years",ylab="Total Emissions",main="Total PM25 emissions from all years through coal and comb sources",col="pink")
+dev.off()
